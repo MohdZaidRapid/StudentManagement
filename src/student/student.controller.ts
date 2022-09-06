@@ -10,17 +10,22 @@ import {
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
+import { ApiResponse, ApiCreatedResponse } from '@nestjs/swagger';
 
 @Controller('student')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
   @Post()
+  @ApiCreatedResponse({
+    description: 'Student Registration',
+  })
   create(@Body() createStudentDto: CreateStudentDto) {
     return this.studentService.create(createStudentDto);
   }
 
   @Get()
+  @ApiResponse({ description: 'Get all Student in Database' })
   findAll() {
     return this.studentService.findAll();
   }
@@ -31,8 +36,11 @@ export class StudentController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateStudentDto: UpdateStudentDto) {
-    return this.studentService.update(id, updateStudentDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateStudentDto: UpdateStudentDto,
+  ) {
+    return await this.studentService.update(id, updateStudentDto);
   }
 
   @Delete(':id')

@@ -3,4 +3,6 @@ export class CreateStudentDto {
   rollNo: string;
   standard: string;
   noOfsubject: number;
+
+  
 }
