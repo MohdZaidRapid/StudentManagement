@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
@@ -29,7 +30,6 @@ export class StudentController {
   @ApiResponse({ description: 'Get all Student in Database' })
   findAll() {
     const users = this.studentService.findAll();
-
     return users;
   }
 
@@ -39,8 +39,14 @@ export class StudentController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateStudentDto: UpdateStudentDto) {
-    const user = this.studentService.update(id, updateStudentDto);
+  async update(
+    @Param('id') id: string,
+    @Body() updateStudentDto: UpdateStudentDto,
+  ) {
+    const user = await this.studentService.update(id, updateStudentDto);
+    if (!user) {
+      throw new UnauthorizedException();
+    }
     return user;
   }
 

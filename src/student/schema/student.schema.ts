@@ -1,27 +1,16 @@
-import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import * as mongoose from 'mongoose';
+import { Student } from '../../StudentInterace/studen.interface';
 
-export type StudentDocument = Student & Document;
-
-@Schema()
-export class Student {
-  @Prop()
-  email: string;
-
-  @Prop()
-  password: true;
-
-  @Prop()
-  name: string;
-
-  @Prop()
-  rollNo: string;
-
-  @Prop()
-  standard: string;
-
-  @Prop()
-  noOfSubject: number;
-}
-
-export const StudentSchema = SchemaFactory.createForClass(Student);
+export const StudentSchema = new mongoose.Schema<Student>(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    rollNo: { type: String, required: true },
+    standard: { type: String, required: true },
+    password: { type: String, required: true },
+    noOfSubject: { type: Number, requried: true },
+  },
+  {
+    timestamps: true,
+  },
+);
