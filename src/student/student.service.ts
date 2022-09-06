@@ -1,26 +1,47 @@
 import { Injectable } from '@nestjs/common';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
+import { InjectModel } from '@nestjs/mongoose';
+import { Student, StudentDocument } from './schema/student.schema';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class StudentService {
-  create(createStudentDto: CreateStudentDto) {
-    return 'This action adds a new student';
+  constructor(
+    @InjectModel(Student.name) private studentModel: Model<StudentDocument>,
+  ) {}
+  create(createStudentDto: CreateStudentDto): Promise<Student> {
+    const model = new this.studentModel();
+    model.name = createStudentDto.name;
+    model.rollNo = createStudentDto.rollNo;
+    model.standard = createStudentDto.standard;
+    model.noOfsubject = createStudentDto.noOfsubject;
+    return model.save();
   }
 
-  findAll() {
-    return `This action returns all student`;
+  findAll(): Promise<Student[]> {
+    return this.studentModel.find().exec();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} student`;
+  findOne(id: string): Promise<Student> {
+    return this.studentModel.findById(id).exec();
   }
 
-  update(id: number, updateStudentDto: UpdateStudentDto) {
-    return `This action updates a #${id} student`;
+  update(id: string, updateStudentDto: UpdateStudentDto) {
+    return this.studentModel
+      .updateOne(
+        { _id: id },
+        {
+          name: updateStudentDto.name,
+          rollNo: updateStudentDto.rollNo,
+          standard: updateStudentDto.standard,
+          noOfSubject: updateStudentDto.noOfsubject,
+        },
+      )
+      .exec();
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} student`;
+  remove(id: string) {
+    return this.studentModel.deleteOne({ _id: id }).exec();
   }
 }
