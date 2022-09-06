@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   NotFoundException,
+  Res,
   UnauthorizedException,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
