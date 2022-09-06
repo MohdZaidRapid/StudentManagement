@@ -15,7 +15,7 @@ export class StudentService {
     model.name = createStudentDto.name;
     model.rollNo = createStudentDto.rollNo;
     model.standard = createStudentDto.standard;
-    model.noOfsubject = createStudentDto.noOfsubject;
+    model.noOfSubject = createStudentDto.noOfSubject;
     return model.save();
   }
 
@@ -35,7 +35,7 @@ export class StudentService {
           name: updateStudentDto.name,
           rollNo: updateStudentDto.rollNo,
           standard: updateStudentDto.standard,
-          noOfSubject: updateStudentDto.noOfsubject,
+          noOfSubject: updateStudentDto.noOfSubject,
         },
       )
       .exec();

@@ -6,6 +6,12 @@ export type StudentDocument = Student & Document;
 @Schema()
 export class Student {
   @Prop()
+  email: string;
+
+  @Prop()
+  password: true;
+
+  @Prop()
   name: string;
 
   @Prop()
@@ -15,7 +21,7 @@ export class Student {
   standard: string;
 
   @Prop()
-  noOfsubject: number;
+  noOfSubject: number;
 }
 
-export const StudentSchema=SchemaFactory.createForClass(Student)
+export const StudentSchema = SchemaFactory.createForClass(Student);

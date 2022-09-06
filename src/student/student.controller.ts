@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
@@ -27,7 +28,9 @@ export class StudentController {
   @Get()
   @ApiResponse({ description: 'Get all Student in Database' })
   findAll() {
-    return this.studentService.findAll();
+    const users = this.studentService.findAll();
+
+    return users;
   }
 
   @Get(':id')
@@ -36,11 +39,9 @@ export class StudentController {
   }
 
   @Patch(':id')
-  async update(
-    @Param('id') id: string,
-    @Body() updateStudentDto: UpdateStudentDto,
-  ) {
-    return await this.studentService.update(id, updateStudentDto);
+  update(@Param('id') id: string, @Body() updateStudentDto: UpdateStudentDto) {
+    const user = this.studentService.update(id, updateStudentDto);
+    return user;
   }
 
   @Delete(':id')
