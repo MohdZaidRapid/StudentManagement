@@ -34,7 +34,7 @@ export class StudentService {
   }
 
   async getUserbyEmail(email: string) {
-    const user = this.studentModel.findOne({ email: email });
+    const user = this.studentModel.find({ email: email });
     console.log(user);
     return user;
   }
