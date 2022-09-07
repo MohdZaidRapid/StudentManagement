@@ -34,9 +34,7 @@ export class StudentService {
   }
 
   async getUserbyEmail(email: string) {
-    const user = this.studentModel.find({ email: email });
-    console.log(user);
-    return user;
+    return await this.studentModel.findOne({ email: email }).exec();
   }
 
   async findOne(id: string): Promise<Student> {

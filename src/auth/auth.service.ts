@@ -8,8 +8,8 @@ export class AuthService {
     private studentService: StudentService,
     private jwtService: JwtService,
   ) {}
-  async validateUser(email: string, password: string): Promise<any> {
-    const user = await this.studentService.getUserbyEmail(email);
+  async validateUser(username: string, password: string): Promise<any> {
+    const user = await this.studentService.getUserbyEmail(username);
     if (user && user.password === password) {
       const { password, ...result } = user;
 
@@ -19,7 +19,9 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { username: user.name};
+    // console.log(user._doc._id.toString());
+    const payload = { id: user._doc._id.toString(), username: user._doc.name };
+
     return {
       access_token: this.jwtService.sign(payload),
     };
