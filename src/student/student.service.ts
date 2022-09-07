@@ -33,6 +33,12 @@ export class StudentService {
     return this.studentModel.find().exec();
   }
 
+  async getUserbyEmail(email: string) {
+    const user = this.studentModel.findOne({ email: email });
+    console.log(user);
+    return user;
+  }
+
   async findOne(id: string): Promise<Student> {
     if (id.match(/^[0-9a-fA-F]{24}$/)) {
       const user = await this.studentModel.findById(id).exec();
