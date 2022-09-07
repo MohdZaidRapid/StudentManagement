@@ -1,4 +1,8 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -29,27 +33,51 @@ export class StudentService {
     return this.studentModel.find().exec();
   }
 
-  findOne(id: string): Promise<Student> {
-    return this.studentModel.findById(id).exec();
+  async findOne(id: string): Promise<Student> {
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      const user = await this.studentModel.findById(id).exec();
+      if (!user) {
+        throw new NotFoundException('User Not Found');
+      } else {
+        return user;
+      }
+    } else {
+      throw new NotFoundException('User Not Found');
+    }
   }
 
-  update(id: string, updateStudentDto: UpdateStudentDto) {
-    return this.studentModel
-      .updateOne(
-        { _id: id },
-        {
-          name: updateStudentDto.name,
-          rollNo: updateStudentDto.rollNo,
-          standard: updateStudentDto.standard,
-          noOfSubject: updateStudentDto.noOfSubject,
-          email: updateStudentDto.email,
-          password: updateStudentDto.password,
-        },
-      )
-      .exec();
+  async update(id: string, updateStudentDto: UpdateStudentDto) {
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      const user = await this.studentModel
+        .updateOne(
+          { _id: id },
+          {
+            name: updateStudentDto.name,
+            rollNo: updateStudentDto.rollNo,
+            standard: updateStudentDto.standard,
+            noOfSubject: updateStudentDto.noOfSubject,
+            email: updateStudentDto.email,
+            password: updateStudentDto.password,
+          },
+        )
+        .exec();
+      return user;
+    } else {
+      throw new NotFoundException('User Not Found');
+    }
   }
 
-  remove(id: string) {
-    return this.studentModel.deleteOne({ _id: id }).exec();
+  async remove(id: string) {
+    if (id.match(/^[0-9a-fA-F]{24}$/)) {
+      const user = await this.studentModel.deleteOne({ _id: id }).exec();
+
+      if (user.deletedCount < 1) {
+        throw new NotFoundException('User Not Found');
+      } else {
+        return user;
+      }
+    } else {
+      throw new NotFoundException('User Not Found');
+    }
   }
 }

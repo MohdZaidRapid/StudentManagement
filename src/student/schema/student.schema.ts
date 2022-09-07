@@ -9,6 +9,7 @@ export const StudentSchema = new mongoose.Schema<Student>(
     standard: { type: String, required: true },
     password: { type: String, required: true },
     noOfSubject: { type: Number, requried: true },
+    
   },
   {
     timestamps: true,
