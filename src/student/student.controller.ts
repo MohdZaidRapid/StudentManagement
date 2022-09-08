@@ -11,6 +11,7 @@ import {
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
+import { ClassNameDto } from './dto/className.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 import {
@@ -21,12 +22,18 @@ import {
   ApiOperation,
   ApiParam,
 } from '@nestjs/swagger';
+
 import { LocalAuthGuard } from '../auth/local-auth.guard';
 
 @ApiTags('Student Model')
 @Controller('student')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
+
+  @Post('class')
+  createClass(@Body() createClassDto: ClassNameDto) {
+    return this.studentService.createClass(createClassDto);
+  }
 
   @Post()
   @ApiOperation({ summary: 'create new record' })

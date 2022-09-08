@@ -1,3 +1,4 @@
+import { ClassNameDto } from './dto/className.dto';
 import {
   Injectable,
   ConflictException,
@@ -7,13 +8,17 @@ import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Student } from './StudentInterace/studen.interface';
+import { className } from './StudentInterace/className.interface';
 
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class StudentService {
-  constructor(@InjectModel('Student') private studentModel: Model<Student>) {}
+  constructor(
+    @InjectModel('Student') private studentModel: Model<Student>,
+    @InjectModel('className') private classModel: Model<className>,
+  ) {}
   async create(createStudentDto: CreateStudentDto) {
     if (await this.studentModel.findOne({ email: createStudentDto.email })) {
       throw new ConflictException('Email already exist');
@@ -31,9 +36,13 @@ export class StudentService {
 
     return await model.save();
   }
+  async createClass(classNameDto: ClassNameDto) {
+    const model = await new this.classModel(classNameDto);
+    return await model.save();
+  }
 
   findAll(): Promise<Student[]> {
-    return this.studentModel.find().exec();
+    return this.studentModel.find().populate('className', 'className').exec();
   }
 
   async getUserbyEmail(email: string) {

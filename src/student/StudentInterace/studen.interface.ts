@@ -1,3 +1,4 @@
+import { className } from './../../../dist/StudentInterace/className.interface.d';
 import { Document } from 'mongoose';
 export interface Student extends Document {
   name: string;
@@ -6,4 +7,5 @@ export interface Student extends Document {
   standard: string;
   password: string;
   noOfSubject: number;
+  className: any;
 }
