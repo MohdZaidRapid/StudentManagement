@@ -6,10 +6,13 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+
 import {
   ApiResponse,
   ApiCreatedResponse,
@@ -18,6 +21,7 @@ import {
   ApiOperation,
   ApiParam,
 } from '@nestjs/swagger';
+import { LocalAuthGuard } from '../auth/local-auth.guard';
 
 @ApiTags('Student Model')
 @Controller('student')
