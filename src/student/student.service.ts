@@ -6,9 +6,10 @@ import {
 import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Student } from '../StudentInterace/studen.interface';
+import { Student } from './StudentInterace/studen.interface';
 
 import { Model } from 'mongoose';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class StudentService {
@@ -17,6 +18,8 @@ export class StudentService {
     if (await this.studentModel.findOne({ email: createStudentDto.email })) {
       throw new ConflictException('Email already exist');
     }
+    const hashedPassword = await bcrypt.hash(createStudentDto.password, 12);
+    createStudentDto.password = hashedPassword;
     const model = await new this.studentModel(createStudentDto);
 
     // model.name = createStudentDto.name;
@@ -31,6 +34,10 @@ export class StudentService {
 
   findAll(): Promise<Student[]> {
     return this.studentModel.find().exec();
+  }
+
+  async getUserbyEmail(email: string) {
+    return await this.studentModel.findOne({ email: email }).exec();
   }
 
   async findOne(id: string): Promise<Student> {
