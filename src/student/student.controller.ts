@@ -15,20 +15,21 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 import {
   ApiResponse,
-  ApiCreatedResponse,
   ApiTags,
   ApiBody,
   ApiOperation,
   ApiParam,
 } from '@nestjs/swagger';
-import { LocalAuthGuard } from '../auth/local-auth.guard';
+
+import { AdminDto } from './dto/admin.dto';
 
 @ApiTags('Student Model')
-@Controller('student')
+@Controller('')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
-  @Post()
+  @UseGuards(JwtAuthGuard)
+  @Post('student')
   @ApiOperation({ summary: 'create new record' })
   @ApiBody({
     schema: {
@@ -76,7 +77,35 @@ export class StudentController {
     return this.studentService.create(createStudentDto);
   }
 
-  @Get()
+  @Post('admin')
+  @ApiOperation({ summary: 'Create Admin' })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        email: {
+          type: 'string',
+          example: 'email=admin@gmail.com',
+          description: 'Login admin',
+        },
+        password: {
+          type: 'string',
+          example: 'password=admin',
+          description: 'Login admin',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: 201,
+    description: 'return jwt token to access restrict route',
+  })
+  createAdmin(@Body() adminDto: AdminDto) {
+    return this.studentService.createAdmin(adminDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('student')
   @ApiOperation({ summary: 'Get all student Data from api' })
   @ApiResponse({
     description: 'All student data list',
@@ -95,13 +124,15 @@ export class StudentController {
     return users;
   }
 
-  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  @Get('student/:id')
   @ApiOperation({ summary: 'Get a Single student by id' })
   findOne(@Param('id') id: string) {
     return this.studentService.findOne(id);
   }
 
-  @Patch(':id')
+  @UseGuards(JwtAuthGuard)
+  @Patch('student/:id')
   @ApiOperation({ summary: 'update the record ' })
   @ApiParam({
     name: 'id',
@@ -162,6 +193,7 @@ export class StudentController {
     status: 500,
     description: 'Internal server error',
   })
+  @UseGuards(JwtAuthGuard)
   async update(
     @Param('id') id: string,
     @Body() updateStudentDto: UpdateStudentDto,
@@ -169,7 +201,8 @@ export class StudentController {
     return await this.studentService.update(id, updateStudentDto);
   }
 
-  @Delete(':id')
+  @UseGuards(JwtAuthGuard)
+  @Delete('student/:id')
   @ApiOperation({ summary: 'delete the record' })
   @ApiParam({
     name: 'id',
