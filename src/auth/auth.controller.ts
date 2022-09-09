@@ -29,11 +29,11 @@ export class AuthController {
         username: {
           type: 'string',
           example: 'example@gmail.com',
-          description: 'email of student',
+          description: 'email of admin',
         },
         password: {
           type: 'string',
-          example: 'Enter student password',
+          example: 'Enter admin password',
         },
       },
     },
