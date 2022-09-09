@@ -40,11 +40,12 @@ export class StudentService {
   async createAdmin(adminDto: AdminDto) {
     if (await this.adminModel.findOne({ email: adminDto.email })) {
       throw new ConflictException('Admin Already exists');
+    } else if ((await this.adminModel.countDocuments({})) > 0) {
+      throw new ConflictException('Admin already available in db');
     }
     const hashedPassword = await bcrypt.hash(adminDto.password, 12);
     adminDto.password = hashedPassword;
     const model = await new this.adminModel(adminDto);
-    
 
     return await model.save();
   }

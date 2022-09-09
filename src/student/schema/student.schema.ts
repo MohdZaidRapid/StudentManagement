@@ -7,7 +7,7 @@ export const StudentSchema = new mongoose.Schema<Student>(
     email: { type: String, required: true, unique: true },
     rollNo: { type: String, required: true },
     standard: { type: String, required: true },
-    password: { type: String, required: true },
+    password: { type: String, required: true, select: false },
     noOfSubject: { type: Number, requried: true },
   },
   {
