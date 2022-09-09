@@ -22,12 +22,14 @@ import {
   ApiParam,
 } from '@nestjs/swagger';
 import { LocalAuthGuard } from '../auth/local-auth.guard';
+import { AdminDto } from './dto/admin.dto';
 
 @ApiTags('Student Model')
 @Controller('student')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Post()
   @ApiOperation({ summary: 'create new record' })
   @ApiBody({
@@ -76,6 +78,12 @@ export class StudentController {
     return this.studentService.create(createStudentDto);
   }
 
+  @Post('admin')
+  createAdmin(@Body() adminDto: AdminDto) {
+    return this.studentService.createAdmin(adminDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get()
   @ApiOperation({ summary: 'Get all student Data from api' })
   @ApiResponse({
@@ -95,12 +103,14 @@ export class StudentController {
     return users;
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get(':id')
   @ApiOperation({ summary: 'Get a Single student by id' })
   findOne(@Param('id') id: string) {
     return this.studentService.findOne(id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   @ApiOperation({ summary: 'update the record ' })
   @ApiParam({
@@ -162,6 +172,7 @@ export class StudentController {
     status: 500,
     description: 'Internal server error',
   })
+  @UseGuards(JwtAuthGuard)
   async update(
     @Param('id') id: string,
     @Body() updateStudentDto: UpdateStudentDto,
@@ -169,6 +180,7 @@ export class StudentController {
     return await this.studentService.update(id, updateStudentDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   @ApiOperation({ summary: 'delete the record' })
   @ApiParam({

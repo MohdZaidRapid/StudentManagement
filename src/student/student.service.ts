@@ -1,3 +1,4 @@
+import { AdminDto } from './dto/admin.dto';
 import {
   Injectable,
   ConflictException,
@@ -7,13 +8,17 @@ import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Student } from './StudentInterace/studen.interface';
+import { Admin } from './StudentInterace/admin.interface';
 
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class StudentService {
-  constructor(@InjectModel('Student') private studentModel: Model<Student>) {}
+  constructor(
+    @InjectModel('Student') private studentModel: Model<Student>,
+    @InjectModel('admin') private adminModel: Model<Admin>,
+  ) {}
   async create(createStudentDto: CreateStudentDto) {
     if (await this.studentModel.findOne({ email: createStudentDto.email })) {
       throw new ConflictException('Email already exist');
@@ -32,12 +37,28 @@ export class StudentService {
     return await model.save();
   }
 
+  async createAdmin(adminDto: AdminDto) {
+    if (await this.adminModel.findOne({ email: adminDto.email })) {
+      throw new ConflictException('Admin Already exists');
+    }
+    const hashedPassword = await bcrypt.hash(adminDto.password, 12);
+    adminDto.password = hashedPassword;
+    const model = await new this.adminModel(adminDto);
+    
+
+    return await model.save();
+  }
+
   findAll(): Promise<Student[]> {
     return this.studentModel.find().exec();
   }
 
   async getUserbyEmail(email: string) {
     return await this.studentModel.findOne({ email: email }).exec();
+  }
+
+  async getAdminAccess(email: string) {
+    return this.adminModel.findOne({ email: email }).exec();
   }
 
   async findOne(id: string): Promise<Student> {

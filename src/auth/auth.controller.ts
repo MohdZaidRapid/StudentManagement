@@ -20,7 +20,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('auth/login')
   @ApiOperation({
-    summary: 'Authenticate student on the basics of credentials',
+    summary: 'Authenticate Admin on the basics of credentials',
   })
   @ApiBody({
     schema: {
